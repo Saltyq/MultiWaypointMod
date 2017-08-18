@@ -1,0 +1,7 @@
+H:\VS Projects\Extended Radar\GTA Mods\MultiWaypointMod\MultiWaypointMod\bin\Debug\MultiWaypointMod.dll
+H:\VS Projects\Extended Radar\GTA Mods\MultiWaypointMod\MultiWaypointMod\bin\Debug\MultiWaypointMod.pdb
+H:\VS Projects\Extended Radar\GTA Mods\MultiWaypointMod\MultiWaypointMod\bin\Debug\ScriptHookVDotNet.dll
+H:\VS Projects\Extended Radar\GTA Mods\MultiWaypointMod\MultiWaypointMod\bin\Debug\ScriptHookVDotNet.xml
+H:\VS Projects\Extended Radar\GTA Mods\MultiWaypointMod\MultiWaypointMod\obj\Debug\MultiWaypointMod.csprojResolveAssemblyReference.cache
+H:\VS Projects\Extended Radar\GTA Mods\MultiWaypointMod\MultiWaypointMod\obj\Debug\MultiWaypointMod.dll
+H:\VS Projects\Extended Radar\GTA Mods\MultiWaypointMod\MultiWaypointMod\obj\Debug\MultiWaypointMod.pdb
