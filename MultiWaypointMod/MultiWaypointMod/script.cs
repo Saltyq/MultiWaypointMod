@@ -34,9 +34,11 @@ namespace MultiWaypointMod
         bool debug = false;
 
         bool firstTime = true;
+        bool modActive = false;
 
         string removeAll = "J";
         string removeNearest = "K";
+        string toggleMod = "P";
 
         public Waypoints()
         {
@@ -54,10 +56,11 @@ namespace MultiWaypointMod
                 ScriptSettings config = ScriptSettings.Load(@".\scripts\MultiWaypoint.ini");
                 removeAll = config.GetValue("Keys", "RemoveAllWaypoints", "J");
                 removeNearest = config.GetValue("Keys", "RemoveNearestWaypoint", "K");
+                toggleMod = config.GetValue("Keys", "Toggle", "P");
             } catch (Exception ex)
             {
                 UI.Notify("Failed to load INI, check MW.log");
-                File.WriteAllLines(@".\scripts\MW.log", new string[] { "ERROR: " + ex.ToString(), });
+                File.WriteAllLines(@".\scripts\MW.log", new string[] { "ERROR: ", ex.ToString(), });
             }
         }
 
@@ -66,48 +69,55 @@ namespace MultiWaypointMod
 
             if (firstTime)
             {
-                UI.Notify("~b~MultiWaypointMod ~w~Loaded.\nCurrent Version: " + version);
+                UI.Notify("~b~MultiWaypointMod ~w~Loaded.\nUse " + toggleMod + " to enable.\nCurrent Version: " + version);
                 firstTime = false;
             }
             if (debug)
             {
                 UI.ShowSubtitle(waypointCount.ToString());
             }
-            player = Game.Player;
-            playerPed = player.Character;
-            if (Function.Call<bool>(Hash.IS_WAYPOINT_ACTIVE))
+            if (modActive)
             {
-                //colorIndex = new Random().Next(5);
-                waypointCount++;
-                Blip newWaypoint = World.CreateBlip(WaypointCoords());
-                newWaypoint.Sprite = BlipSprite.Waypoint;
-                newWaypoint.Name = "Waypoint";
-                //newWaypoint.ShowRoute = true;
-                Function.Call(Hash.SET_WAYPOINT_OFF);
-                _waypointPool.Add(newWaypoint);
-                if (debug)
+                player = Game.Player;
+                playerPed = player.Character;
+                if (Function.Call<bool>(Hash.IS_WAYPOINT_ACTIVE))
                 {
-                    UI.Notify("waypoint added");
-                }
-            }
-            if (waypointCount > 0)
-            {
-                
-                for (int i = 0; i < _waypointPool.Count; i++)
-                {
+                    //colorIndex = new Random().Next(5);
+                    waypointCount++;
+                    Blip newWaypoint = World.CreateBlip(WaypointCoords());
+                    newWaypoint.Sprite = BlipSprite.Waypoint;
+                    newWaypoint.Name = "Waypoint";
+                    //newWaypoint.ShowRoute = true;
+                    Function.Call(Hash.SET_WAYPOINT_OFF);
+                    _waypointPool.Add(newWaypoint);
                     if (debug)
                     {
-                        UI.Notify(_waypointPool.Count.ToString());
-                    }
-                    if (World.GetDistance(_waypointPool[i].Position, playerPed.Position) <= 50)
-                    {
-                        _waypointPool[i].Remove();
-                        _waypointPool.Remove(_waypointPool[i]);
-                        waypointCount--;
+                        UI.Notify("waypoint added");
                     }
                 }
+                if (waypointCount > 0)
+                {
+
+                    for (int i = 0; i < _waypointPool.Count; i++)
+                    {
+                        if (debug)
+                        {
+                            UI.Notify(_waypointPool.Count.ToString());
+                        }
+                        if (World.GetDistance(_waypointPool[i].Position, playerPed.Position) <= 50)
+                        {
+                            _waypointPool[i].Remove();
+                            _waypointPool.Remove(_waypointPool[i]);
+                            waypointCount--;
+                        }
+                    }
+                }
+                ShowText(0.013f, 0.77f, 0.4f, Convert.ToInt32(GTA.Font.Pricedown), Color.White.R, Color.White.G, Color.White.B, "# of waypoints: " + _waypointPool.Count.ToString());
             }
-            ShowText(0.013f, 0.77f, 0.4f, Convert.ToInt32(GTA.Font.Pricedown), Color.White.R, Color.White.G, Color.White.B, "# of waypoints: " + _waypointPool.Count.ToString());
+            else
+            {
+                ShowText(0.013f, 0.77f, 0.25f, Convert.ToInt32(GTA.Font.Pricedown), Color.White.R, Color.White.G, Color.White.B, "Waypoint Mod Disabled, press " + toggleMod + " to enable.");
+            }
         }
 
         private void onKeyDown(object sender, KeyEventArgs e)
@@ -115,6 +125,7 @@ namespace MultiWaypointMod
 
             Keys removeAllPoints = (Keys)Enum.Parse(typeof(Keys), removeAll);
             Keys removeNearestPoint = (Keys)Enum.Parse(typeof(Keys), removeNearest);
+            Keys toggleModKey = (Keys)Enum.Parse(typeof(Keys), toggleMod);
 
             if (e.KeyCode == removeAllPoints)
             {
@@ -139,6 +150,10 @@ namespace MultiWaypointMod
                         waypointCount--;
                     }
                 }
+            }
+            if (e.KeyCode == toggleModKey)
+            {
+                modActive = !modActive;
             }
         }
 
